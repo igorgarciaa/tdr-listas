@@ -1,0 +1,10 @@
+Variavel: "Ozone"
+Observacoes: 153
+Valores NA: 37
+
+Mes Media Dias
+5 23.62 26
+6 29.44 9
+7 59.12 26
+8 59.96 26
+9 31.45 29
