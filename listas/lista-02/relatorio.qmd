@@ -1,0 +1,36 @@
+---
+title: "Ozônio e velocidade do vento em Nova York"
+author: "Igor Garcia"
+lang: pt-BR
+format:
+  html:
+    embed-resources: true
+---
+
+```{r carrega}
+#| echo: false
+targets::tar_load(c(dados, medias, modelo, figura))
+```
+
+O conjunto tem `r nrow(dados)` observações diárias, das quais `r nobs(modelo)` têm medida simultânea de ozônio e de vento e entram no ajuste. As médias mensais das duas variáveis estão na @tbl-medias.
+
+```{r}
+#| label: tbl-medias
+#| echo: false
+#| tbl-cap: "Médias mensais de ozônio e de velocidade do vento."
+knitr::kable(medias,
+             col.names = c("Mês", "Ozônio (ppb)", "Vento (mph)"))
+```
+
+A @fig-dispersao mostra a dispersão das duas variáveis com a reta ajustada.
+
+```{r}
+#| label: fig-dispersao
+#| echo: false
+#| fig-cap: "Ozônio contra velocidade do vento, com a reta ajustada."
+knitr::include_graphics(here::here(figura))
+```
+
+O modelo explica `r round(100 * summary(modelo)$r.squared, 1)`% da variação do ozônio, com inclinação de `r round(coef(modelo)[2], 2)` ppb por mph.
+
+A associação é negativa e moderada: dias de vento mais forte registram concentrações menores de ozônio, o que é compatível com a dispersão do poluente pela circulação do ar. A dispersão em torno da reta continua grande, de modo que o vento sozinho não determina a concentração.

@@ -9,7 +9,7 @@ list(
   tar_target(medias, medias_mensais(dados)),
   tar_target(modelo, ajustar_modelo(dados)),
   tar_target(figura, salvar_figura(dados, modelo), format = "file"),
-  tar_target(medias_csv, exportar_medias(medias), format = "file")
-  #tar_quarto(relatorio, "relatorio.qmd")
+  tar_target(medias_csv, exportar_medias(medias), format = "file"),
+  tar_quarto(relatorio, "relatorio.qmd")
 )
 
