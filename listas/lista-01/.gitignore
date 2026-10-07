@@ -1,0 +1,14 @@
+# Auxiliare para compilar o LaTeX 
+*.aux
+*.log
+*.out
+*.fls
+*.fdb_latexmk
+
+# Auxiliares de bibliografia
+*.bbl
+*.blg
+
+# Arquivos deixados de lado pelo R
+.Rhistory
+.RData
