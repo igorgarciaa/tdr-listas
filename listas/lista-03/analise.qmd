@@ -10,8 +10,23 @@ execute:
 ---
 
 ```{r}
-  library(tidyverse)
+#| label: pacotes
+#| message: false
+library(tidyverse)
+```
 
+## Exercício 1: O documento e a leitura
+
+No terminal, `file -i dados/*.csv` mostra que o cadastro está em
+`iso-8859-1` (latin1) e os arquivos anuais em `us-ascii`. Em todos, o
+separador de campos é o ponto e vírgula. Os valores anuais são inteiros,
+sem separador decimal, e o mês sem registro aparece como `-`. Por isso a
+leitura usa `read_csv2()`, que assume `;` como separador e vírgula como
+decimal, com a codificação latin1 declarada no cadastro e o `-` declarado
+como ausência nos arquivos anuais.
+
+```{r}
+#| label: ler-cadastro
 cadastro <- read_csv2("dados/cadastro.csv",
                       locale = locale(encoding = "latin1"),
                       col_types = cols(codigo = col_character(),
@@ -29,4 +44,20 @@ consultas_2023 <- read_csv2("dados/consultas_2023.csv", na = "-",
                             col_types = cols(codigo = col_character(),
                                              .default = col_double()))
 consultas_2023
+```
+
+## Exercício 2: Arrumar a tabela
+
+```{r}
+#| label: pivotar
+longo <- consultas_2023 |>
+  pivot_longer(cols = jan:dez, names_to = "mes", values_to = "consultas") |>
+  mutate(mes = factor(mes, levels = meses))
+longo
+```
+
+```{r}
+#| label: conferir-longo
+nrow(longo)
+sum(is.na(longo$consultas))
 ```
