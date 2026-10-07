@@ -86,5 +86,41 @@ sem_medicao <- cadastro |>
   anti_join(consultas_2023, by = join_by(codigo))
 sem_medicao
 ```
-
 A unidade sem medição é a `r sem_medicao$nome`.
+
+## Exercício 4: Resumir por grupo
+
+Um mês sem registro em uma UBS é uma informação que não chegou, e não um
+mês em que a unidade fez zero consultas. Por isso os ausentes **não** são
+trocados por zero: o total soma só os meses registrados (`na.rm = TRUE`) e a
+média relativa é calculada sobre os meses com registro.
+
+```{r}
+#| label: resumo-unidade
+por_unidade <- juntado |>
+  summarise(meses_registrados = sum(!is.na(consultas)),
+            total = sum(consultas, na.rm = TRUE),
+            media_consultas_equipe = mean(consultas_equipe, na.rm = TRUE),
+            .by = c(codigo, nome, distrito)) |>
+  arrange(desc(media_consultas_equipe))
+por_unidade
+```
+
+```{r}
+#| label: resumo-distrito
+por_distrito <- juntado |>
+  summarise(unidades = n_distinct(codigo),
+            total = sum(consultas, na.rm = TRUE),
+            media_consultas_equipe = mean(consultas_equipe, na.rm = TRUE),
+            .by = distrito)
+por_distrito
+```
+
+A decisão afeta a coluna `media_consultas_equipe`: trocar o ausente por zero
+puxaria para baixo a média das unidades com meses sem registro. Ela não
+afeta a coluna `total`, porque somar zero ou ignorar o mês dá o mesmo
+resultado.
+
+Em 2023, as unidades registraram
+`r format(sum(por_distrito$total), big.mark = ".", decimal.mark = ",")`
+consultas.
