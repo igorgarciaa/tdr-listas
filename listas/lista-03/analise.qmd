@@ -1,0 +1,32 @@
+---
+title: "Consultas nas unidades básicas de saúde de um município"
+author: "Igor Garcia"
+lang: pt-BR
+format:
+  html:
+    embed-resources: true
+execute:
+  echo: true
+---
+
+```{r}
+  library(tidyverse)
+
+cadastro <- read_csv2("dados/cadastro.csv",
+                      locale = locale(encoding = "latin1"),
+                      col_types = cols(codigo = col_character(),
+                                       nome = col_character(),
+                                       distrito = col_character(),
+                                       equipes = col_double()))
+cadastro
+```
+
+```{r}
+meses <- c("jan", "fev", "mar", "abr", "mai", "jun",
+           "jul", "ago", "set", "out", "nov", "dez")
+
+consultas_2023 <- read_csv2("dados/consultas_2023.csv", na = "-",
+                            col_types = cols(codigo = col_character(),
+                                             .default = col_double()))
+consultas_2023
+```
