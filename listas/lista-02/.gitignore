@@ -1,0 +1,7 @@
+_targets/
+saidas/
+relatorio.html
+relatorio_files/
+.Rhistory
+.RData
+.Rproj.user/
