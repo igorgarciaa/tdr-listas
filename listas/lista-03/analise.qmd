@@ -124,3 +124,53 @@ resultado.
 Em 2023, as unidades registraram
 `r format(sum(por_distrito$total), big.mark = ".", decimal.mark = ",")`
 consultas.
+
+## Exercício 5: Todos os anos de uma vez
+
+```{r}
+#| label: ler-todos
+arquivos <- list.files("dados", pattern = "^consultas_\\d{4}\\.csv$",
+                       full.names = TRUE)
+
+empilhado <- arquivos |>
+  set_names(basename) |>
+  map(\(a) read_csv2(a, na = "-",
+                     col_types = cols(codigo = col_character(),
+                                      .default = col_double()))) |>
+  list_rbind(names_to = "arquivo") |>
+  mutate(ano = parse_number(arquivo))
+empilhado
+```
+
+A cadeia dos Exercícios 2 e 3 serviu sem alteração porque o
+`pivot_longer()` seleciona as colunas com `jan:dez`. Com uma seleção do tipo
+`-codigo`, as colunas novas `arquivo` (texto) e `ano` entrariam no
+empilhamento e o `pivot_longer()` falharia por misturar texto com número. Os
+resumos, a partir daqui, precisam incluir `ano` no agrupamento.
+
+```{r}
+#| label: cadeia-todos
+juntado_todos <- empilhado |>
+  pivot_longer(cols = jan:dez, names_to = "mes", values_to = "consultas") |>
+  mutate(mes = factor(mes, levels = meses)) |>
+  left_join(cadastro, by = join_by(codigo), relationship = "many-to-one") |>
+  mutate(consultas_equipe = consultas / equipes)
+
+nrow(juntado_todos)
+
+juntado_todos |>
+  summarise(ausentes = sum(is.na(consultas)),
+            soma = sum(consultas, na.rm = TRUE),
+            .by = ano)
+```
+
+```{r}
+#| label: apresentacao
+apresentacao <- juntado_todos |>
+  summarise(total = sum(consultas, na.rm = TRUE), .by = c(distrito, ano)) |>
+  pivot_wider(names_from = ano, values_from = total)
+apresentacao
+
+apresentacao |>
+  summarise(across(-distrito, sum))
+```
