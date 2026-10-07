@@ -174,3 +174,33 @@ apresentacao
 apresentacao |>
   summarise(across(-distrito, sum))
 ```
+## Uso de IA neste trabalho
+
+Usei o Claude (Anthropic), um assistente de IA, durante a lista. Registro
+aqui o que ele fez e o que ficou sob minha responsabilidade.
+
+**O que forneci:** o enunciado da lista, o Capítulo 7 e a prática de
+Tidyverse, além dos cinco arquivos de `dados/` sorteados para o meu login.
+
+**O que a IA fez:**
+
+- inspecionou os arquivos (`file -i`, `head`) e identificou o separador, a
+  codificação de cada um e a marca de ausência `-`;
+- escreveu o código de leitura, pivotamento, junção, resumos e leitura em
+  lote, seguindo as funções do capítulo e da prática;
+- executou o código e conferiu os resultados com a seção *Conferência* do
+  `LEIA-ME.txt`: 12 unidades no cadastro, 11 com medições, ausentes e somas
+  de cada ano;
+- mostrou os dois erros que a lista antecipa: a leitura sem `na = "-"` e o
+  pivotamento com `cols = -codigo` na tabela empilhada;
+- propôs o tratamento dos meses sem registro e redigiu o texto deste
+  documento.
+
+**O que decidi e ajustei:** pedi que a leitura seguisse a prática, com
+`read_csv2()` no lugar de `read_delim()`. Mantive os meses sem registro como
+ausentes, e não como zero, porque um mês sem registro em uma UBS indica falta
+de informação, e não ausência de atendimento.
+
+**Como verifiquei:** rodei o documento com `quarto render` a partir dos dados
+originais, sem editar nenhum arquivo de `dados/`, e conferi que os totais e as
+contagens de ausentes reproduzem os valores do `LEIA-ME.txt`.
