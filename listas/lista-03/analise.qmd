@@ -61,3 +61,30 @@ longo
 nrow(longo)
 sum(is.na(longo$consultas))
 ```
+
+## Exercício 3: Juntar ao cadastro
+
+A tabela longa é a da esquerda e todas as suas linhas devem ficar, então a
+junção é `left_join()`. Cada código aparece várias vezes na tabela longa e
+uma vez no cadastro, então a relação esperada é `"many-to-one"`.
+
+```{r}
+#| label: juntar
+juntado <- longo |>
+  left_join(cadastro, by = join_by(codigo), relationship = "many-to-one") |>
+  mutate(consultas_equipe = consultas / equipes)
+
+c(antes = nrow(longo), depois = nrow(juntado))
+juntado
+```
+
+Unidade do cadastro sem medição alguma:
+
+```{r}
+#| label: sem-medicao
+sem_medicao <- cadastro |>
+  anti_join(consultas_2023, by = join_by(codigo))
+sem_medicao
+```
+
+A unidade sem medição é a `r sem_medicao$nome`.
